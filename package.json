@@ -1,0 +1,16 @@
+{
+  "name": "@vuetify/triage-action",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:vuetifyjs/triage-action.git",
+  "author": "Kael <kaelwd@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/github": "^5.0.0",
+    "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.29.0"
+  }
+}

@@ -1,0 +1,18 @@
+name: 'Triage'
+description: "Add tags to issues as they're opened"
+inputs:
+  token:
+    description: 'Github token'
+    required: true
+  triageLabel:
+    description: 'The name of the triage label to add'
+    required: true
+  sponsorsFile:
+    description: 'Path to a file containing sponsors'
+    required: true
+  triagedLabels:
+    description: "If any of these labels are present the triage label won't be added"
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
