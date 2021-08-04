@@ -23,7 +23,7 @@ const sponsorsFile = core.getInput('sponsorsFile')
   const sponsors = YAML.parse(await fs.readFile(sponsorsFile, 'utf8'))
   const issueAuthor = context.payload.issue.user.login
   for (const { label, members } of sponsors) {
-    if (~members.findIndex(v => v.toLowerCase() === issueAuthor.toLowerCase())) {
+    if (members && ~members.findIndex(v => v.toLowerCase() === issueAuthor.toLowerCase())) {
       labelsToAdd.push(label)
       break
     }
