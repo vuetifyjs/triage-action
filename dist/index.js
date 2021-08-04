@@ -12934,6 +12934,13 @@ const sponsorsFile = core.getInput('sponsorsFile')
   const issueLabels = context.payload.issue.labels.map(v => v.name)
   if (!issueLabels.some(v => triagedLabels.includes(v))) {
     labelsToAdd.push(triageLabel)
+  } else {
+    await octokit.rest.issues.removeLabel({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: context.payload.issue.number,
+      label: triageLabel
+    })
   }
 
   const sponsors = YAML.parse(await fs.readFile(sponsorsFile, 'utf8'))
