@@ -5,6 +5,9 @@
   "repository": "git@github.com:vuetifyjs/triage-action.git",
   "author": "Kael <kaelwd@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "ncc build triage.js"
+  },
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
