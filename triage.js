@@ -23,7 +23,7 @@ const sponsorsFile = core.getInput('sponsorsFile')
       owner: context.repo.owner,
       repo: context.repo.repo,
       issue_number: context.payload.issue.number,
-      label: triageLabel
+      name: triageLabel
     })
   }
 
