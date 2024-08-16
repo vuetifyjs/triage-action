@@ -8,40 +8,60 @@ const context = github.context
 const token = core.getInput('token')
 const octokit = github.getOctokit(token)
 
+const duplicateLabel = core.getInput('duplicateLabel')
 const triageLabel = core.getInput('triageLabel')
 const triagedLabels = core.getInput('triagedLabels').split('\n')
 const sponsorsFile = core.getInput('sponsorsFile')
 
+const duplicateRegexp = /duplicate(?:d| of)? #(\d+)/gi
+
 ;(async function run() {
-  const labelsToAdd = []
+  const labelsToAdd = new Set()
+  const labelsToRemove = new Set()
 
   const issueLabels = context.payload.issue.labels.map(v => v.name)
   if (!issueLabels.some(v => triagedLabels.includes(v))) {
-    labelsToAdd.push(triageLabel)
+    labelsToAdd.add(triageLabel)
   } else {
-    await octokit.rest.issues.removeLabel({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
+    labelsToRemove.add(triageLabel)
+  }
+
+  if (
+    context.payload.action === 'closed' &&
+    context.payload.issue.state_reason === 'not_planned' &&
+    context.payload.issue.comments
+  ) {
+    const comments = await octokit.rest.issues.listComments({
+      ...context.repo,
       issue_number: context.payload.issue.number,
-      name: triageLabel
-    })
+    }).then(r => r.data)
+    if (duplicateRegexp.test(comments.at(-1)?.body)) {
+      labelsToAdd.add(duplicateLabel)
+      labelsToRemove.add(triageLabel)
+    }
   }
 
   const sponsors = YAML.parse(await fs.readFile(sponsorsFile, 'utf8'))
   const issueAuthor = context.payload.issue.user.login
   for (const { label, members } of sponsors) {
     if (members && ~members.findIndex(v => v.toLowerCase() === issueAuthor.toLowerCase())) {
-      labelsToAdd.push(label)
+      labelsToAdd.add(label)
       break
     }
   }
 
-  if (labelsToAdd.length) {
+  if (labelsToAdd.size) {
     await octokit.rest.issues.addLabels({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
+      ...context.repo,
       issue_number: context.payload.issue.number,
-      labels: labelsToAdd
+      labels: [...labelsToAdd],
+    })
+  }
+  for (const label of labelsToRemove) {
+    await octokit.rest.issues.removeLabel({
+      ...context.repo,
+      issue_number: context.payload.issue.number,
+      name: label,
     })
   }
 })()

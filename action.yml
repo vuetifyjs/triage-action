@@ -4,6 +4,9 @@ inputs:
   token:
     description: 'Github token'
     required: true
+  duplicateLabel:
+    description: 'The name of the duplicate label to add'
+    required: true
   triageLabel:
     description: 'The name of the triage label to add'
     required: true
