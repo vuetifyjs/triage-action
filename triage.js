@@ -26,16 +26,16 @@ const duplicateRegexp = /duplicate(?:d| of)? #(\d+)/gi
     labelsToRemove.add(triageLabel)
   }
 
-  if (
-    context.payload.action === 'closed' &&
-    context.payload.issue.state_reason === 'not_planned' &&
-    context.payload.issue.comments
-  ) {
-    const comments = await octokit.rest.issues.listComments({
-      ...context.repo,
-      issue_number: context.payload.issue.number,
-    }).then(r => r.data)
-    if (duplicateRegexp.test(comments.at(-1)?.body)) {
+  if (context.payload.action === 'closed') {
+    let hasDuplicateComment
+    if (context.payload.issue.state_reason === 'not_planned' && context.payload.issue.comments) {
+      const comments = await octokit.rest.issues.listComments({
+        ...context.repo,
+        issue_number: context.payload.issue.number,
+      }).then(r => r.data)
+      hasDuplicateComment = duplicateRegexp.test(comments.at(-1)?.body)
+    }
+    if (hasDuplicateComment || context.payload.issue.state_reason === 'duplicate') {
       labelsToAdd.add(duplicateLabel)
       labelsToRemove.add(triageLabel)
     }
