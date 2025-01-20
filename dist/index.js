@@ -39620,11 +39620,15 @@ const duplicateRegexp = /duplicate(?:d| of)? #(\d+)/gi
     })
   }
   for (const label of labelsToRemove) {
-    await octokit.rest.issues.removeLabel({
-      ...context.repo,
-      issue_number: context.payload.issue.number,
-      name: label,
-    })
+    try {
+      await octokit.rest.issues.removeLabel({
+        ...context.repo,
+        issue_number: context.payload.issue.number,
+        name: label,
+      })
+    } catch (err) {
+      console.error(err)
+    }
   }
 })()
 
