@@ -39569,6 +39569,7 @@ const octokit = github.getOctokit(token)
 
 const duplicateLabel = core.getInput('duplicateLabel')
 const triageLabel = core.getInput('triageLabel')
+const staleLabel = core.getInput('staleLabel')
 const triagedLabels = core.getInput('triagedLabels').split('\n')
 const sponsorsFile = core.getInput('sponsorsFile')
 
@@ -39583,6 +39584,7 @@ const duplicateRegexp = /duplicate(?:d| of)? #(\d+)/gi
     labelsToAdd.add(triageLabel)
   } else {
     labelsToRemove.add(triageLabel)
+    staleLabel && labelsToRemove.add(staleLabel)
   }
 
   if (context.payload.action === 'closed') {
@@ -39597,6 +39599,7 @@ const duplicateRegexp = /duplicate(?:d| of)? #(\d+)/gi
     if (hasDuplicateComment || context.payload.issue.state_reason === 'duplicate') {
       labelsToAdd.add(duplicateLabel)
       labelsToRemove.add(triageLabel)
+      staleLabel && labelsToRemove.add(staleLabel)
     }
   }
 

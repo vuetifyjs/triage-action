@@ -10,6 +10,9 @@ inputs:
   triageLabel:
     description: 'The name of the triage label to add'
     required: true
+  staleLabel:
+    description: 'The name of the stale label to remove'
+    required: false
   sponsorsFile:
     description: 'Path to a file containing sponsors'
     required: true
