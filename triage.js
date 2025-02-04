@@ -17,6 +17,8 @@ const sponsorsFile = core.getInput('sponsorsFile')
 const duplicateRegexp = /duplicate(?:d| of)? #(\d+)/gi
 
 ;(async function run() {
+  if (!context.payload.issue) return
+
   const labelsToAdd = new Set()
   const labelsToRemove = new Set()
 
