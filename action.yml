@@ -20,5 +20,5 @@ inputs:
     description: "If any of these labels are present the triage label won't be added"
     required: true
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
